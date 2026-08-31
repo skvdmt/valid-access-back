@@ -1,0 +1,14 @@
+syntax="proto3";
+package valid_access_v1;
+option go_package="/valid_access;valid_access_v1";
+
+service Validator {
+  rpc AccessTokenValidation(AccessToken) returns(Empty);
+}
+
+message AccessToken {
+  string token = 1;
+}
+
+message Empty {
+}
