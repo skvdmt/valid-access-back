@@ -20,6 +20,12 @@ jobs:
             rm -rf ${{ github.repository }}
             git clone ssh://git@github.com/${{ github.repository }}.git
           EOF
+      - name: Create certs.
+        run: |
+          ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
+            mkdir /etc/ssl/certs/${{ github.event.repository.name }}
+            openssl req -x509 -out ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt -keyout ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/private.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <( printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+          EOF
       - name: Testing.
         run: |
           ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
@@ -80,6 +86,7 @@ jobs:
               --name ${{ github.event.repository.name }} \
               --env ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
               --volume ${{ secrets.HOME }}/logs/${{ github.event.repository.name }}:/var/log/${{ github.event.repository.name }} \
+              --volume ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}:/etc/ssl/certs/${{ github.event.repository.name }} \
               --restart unless-stopped \
               --stop-timeout -1 \
               ${{ github.repository }}

@@ -33,13 +33,6 @@ RUN mkdir /etc/${NAME}
 # Копирование файлов.
 COPY ./config/prod.yaml /etc/${NAME}/prod.yaml
 COPY --from=building /usr/local/bin/${NAME} /usr/local/bin/${NAME}
-# Создание сертификатов.
-RUN apk add openssl
-RUN mkdir /etc/ssl/certs/${NAME}
-RUN openssl req -x509 -out /etc/ssl/certs/${NAME}/cert.crt -keyout /etc/ssl/certs/${NAME}/private.key \
-  	-newkey rsa:2048 -nodes -sha256 \
-  	-subj '/CN=localhost' -extensions EXT -config <( \
-   	printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 # Создание точки входа.
 COPY ./docker-entrypoint.sh /usr/local/bin
 RUN echo "exec ${NAME}" >> /usr/local/bin/docker-entrypoint.sh
