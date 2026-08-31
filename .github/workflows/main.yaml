@@ -23,7 +23,7 @@ jobs:
       - name: Create certs.
         run: |
           ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
-            mkdir /etc/ssl/certs/${{ github.event.repository.name }}
+            mkdir ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}
             openssl req -x509 -out ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt -keyout ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/private.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <( printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
           EOF
       - name: Testing.
