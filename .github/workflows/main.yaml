@@ -80,7 +80,6 @@ jobs:
               --name ${{ github.event.repository.name }} \
               --env ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
               --volume ${{ secrets.HOME }}/logs/${{ github.event.repository.name }}:/var/log/${{ github.event.repository.name }} \
-              --volume ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}:/etc/ssl/certs/${{ github.event.repository.name }} \
               --restart unless-stopped \
               --stop-timeout -1 \
               ${{ github.repository }}
