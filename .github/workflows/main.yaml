@@ -24,7 +24,9 @@ jobs:
         run: |
           ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
             mkdir ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}
-            openssl req -x509 -out ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt -keyout ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/private.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=${{ github.event.repository.name }}' -extensions EXT -config <( printf "[dn]\nCN=${{ github.event.repository.name }}\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:${{ github.event.repository.name }}\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+            if [ ! -f ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt ]; then
+              openssl req -x509 -out ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt -keyout ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/private.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=${{ github.event.repository.name }}' -extensions EXT -config <( printf "[dn]\nCN=${{ github.event.repository.name }}\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:${{ github.event.repository.name }}\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+            fi
           EOF
       - name: Testing.
         run: |
@@ -79,7 +81,6 @@ jobs:
       - name: Creating and runnig application container.
         run: |
           ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
-            docker restart secret-back || true
             docker stop ${{ github.event.repository.name }} || true
             docker rm ${{ github.event.repository.name }} || true
             docker run -d \
