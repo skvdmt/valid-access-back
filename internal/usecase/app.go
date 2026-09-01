@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/skvdmt/erw"
 	"github.com/skvdmt/jwt"
@@ -36,9 +35,9 @@ func (a *App) Stop(ctx context.Context) error {
 // AccessTokenValidation Валидация токена доступа.
 func (a *App) AccessTokenValidation(ctx context.Context, token string) error {
 	// Валидация токена в кэше.
-	if a.repository.AccessTokenValidInCache(ctx, token) {
-		return nil
-	}
+	// if a.repository.AccessTokenValidInCache(ctx, token) {
+	// 	return nil
+	// }
 	// Разбор и валидация токена.
 	p, err := jwt.Parse(token)
 	if err != nil {
@@ -52,9 +51,9 @@ func (a *App) AccessTokenValidation(ctx context.Context, token string) error {
 		)
 	}
 	// Добавление в кеш.
-	e, _ := p.Claim("exp")
-	et, _ := time.Parse(time.RFC3339, e)
-	u, _ := p.Claim("usr")
-	a.repository.AccessTokenAddToCache(ctx, token, u, et.Unix())
+	// e, _ := p.Claim("exp")
+	// et, _ := time.Parse(time.RFC3339, e)
+	// u, _ := p.Claim("usr")
+	// a.repository.AccessTokenAddToCache(ctx, token, u, et.Unix())
 	return nil
 }
