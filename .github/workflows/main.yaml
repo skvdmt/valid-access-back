@@ -79,6 +79,7 @@ jobs:
       - name: Creating and runnig application container.
         run: |
           ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
+            docker restart secret-back || true
             docker stop ${{ github.event.repository.name }} || true
             docker rm ${{ github.event.repository.name }} || true
             docker run -d \
@@ -90,7 +91,6 @@ jobs:
               --restart unless-stopped \
               --stop-timeout -1 \
               ${{ github.repository }}
-            docker restart secret-back || true
             EOF
       - name: Remove SSH key files.
         if: success() || failure()
