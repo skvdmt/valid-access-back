@@ -54,6 +54,7 @@ func (a *App) AccessTokenValidation(ctx context.Context, token string) error {
 	// Добавление в кеш.
 	e, _ := p.Claim("exp")
 	et, _ := time.Parse(time.RFC3339, e)
-	a.repository.AccessTokenAddToCache(ctx, token, et.Unix())
+	u, _ := p.Claim("usr")
+	a.repository.AccessTokenAddToCache(ctx, token, u, et.Unix())
 	return nil
 }

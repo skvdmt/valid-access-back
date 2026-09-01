@@ -14,8 +14,7 @@ const (
 
 // App Резиторный слой.
 type App struct {
-	accessTokens     map[string]int64
-	mu               *sync.RWMutex
+	accessTokens     *UsersTokenCache
 	clearCacheTicker *time.Ticker
 	clearCacheExit   chan struct{}
 	sources          *sync.WaitGroup
@@ -25,8 +24,7 @@ type App struct {
 func NewApp(ctx context.Context) (*App, error) {
 	model.Log.Info.Info("repository layer creating")
 	a := &App{
-		accessTokens:     make(map[string]int64),
-		mu:               &sync.RWMutex{},
+		accessTokens:     NewUsersTokenCache(),
 		clearCacheTicker: time.NewTicker(CLEAR_CACHE_INTERVAL),
 		clearCacheExit:   make(chan struct{}, 1),
 		sources:          &sync.WaitGroup{},
@@ -46,23 +44,12 @@ func (a *App) Stop(context.Context) error {
 
 // AccessTokenValidInCache Валидация токена доступа по кэшу.
 func (a *App) AccessTokenValidInCache(c context.Context, token string) bool {
-	a.mu.RLock()
-	t, ok := a.accessTokens[token]
-	a.mu.RUnlock()
-	if !ok {
-		return false
-	}
-	if t < time.Now().Unix() {
-		return false
-	}
-	return true
+	return a.accessTokens.Valid(token)
 }
 
 // AccessTokenAddToCache Добавление токена доступа в кэш.
-func (a *App) AccessTokenAddToCache(c context.Context, token string, exp int64) {
-	a.mu.Lock()
-	a.accessTokens[token] = exp
-	a.mu.Unlock()
+func (a *App) AccessTokenAddToCache(c context.Context, token, username string, exp int64) {
+	a.accessTokens.Add(username, token, exp)
 }
 
 // clearCacheHandler Обработчик очистки кэша.
@@ -71,25 +58,11 @@ func (a *App) clearCacheHandler() {
 	for {
 		select {
 		case <-a.clearCacheTicker.C:
-			a.clearCache()
+			a.accessTokens.Clear()
 		case <-a.clearCacheExit:
 			model.Log.Info.Info("clear cache handler stopped")
 			a.sources.Done()
 			return
 		}
 	}
-}
-
-// clearCache Очистка кеша.
-func (a *App) clearCache() {
-	model.Log.Info.Info("clear cache")
-	n := make(map[string]int64)
-	a.mu.Lock()
-	defer a.mu.Unlock()
-	for t, e := range a.accessTokens {
-		if e > time.Now().Unix() {
-			n[t] = e
-		}
-	}
-	a.accessTokens = n
 }

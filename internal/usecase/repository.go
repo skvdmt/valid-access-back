@@ -11,5 +11,5 @@ type Repository interface {
 	// Валидация токена доступа по кэшу.
 	AccessTokenValidInCache(c context.Context, token string) bool
 	// Добавление токена доступа в кэш.
-	AccessTokenAddToCache(c context.Context, token string, exp int64)
+	AccessTokenAddToCache(c context.Context, token, username string, exp int64)
 }
