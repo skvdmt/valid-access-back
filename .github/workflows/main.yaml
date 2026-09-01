@@ -24,9 +24,7 @@ jobs:
         run: |
           ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
             mkdir ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}
-            if [ ! -f ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt ]; then
-              openssl req -x509 -out ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt -keyout ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/private.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=${{ github.event.repository.name }}' -extensions EXT -config <( printf "[dn]\nCN=${{ github.event.repository.name }}\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:${{ github.event.repository.name }}\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
-            fi
+            openssl req -x509 -out ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/cert.crt -keyout ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}/private.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=${{ github.event.repository.name }}' -extensions EXT -config <( printf "[dn]\nCN=${{ github.event.repository.name }}\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:${{ github.event.repository.name }}\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
           EOF
       - name: Testing.
         run: |
@@ -92,7 +90,8 @@ jobs:
               --restart unless-stopped \
               --stop-timeout -1 \
               ${{ github.repository }}
-            EOF
+            docker restart secret-back || true
+          EOF
       - name: Remove SSH key files.
         if: success() || failure()
         run: |
