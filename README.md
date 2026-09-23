@@ -1,15 +1,17 @@
-# valid-access-back
+# Access token validation
 
-Проверка валидности токена доступа.
-Применяется для проверки токена доступа на бекэнде.
-Соединение с сервером осуществляется по gRPC.
-Применяется при проверки токена выданого [API аутентификации](https://secret.skvdmt.ru/api/auth/v1/doc).
+### Description
+Used to verify the access token on the backend.
 
-Instalation
-```
+The connection to the server is established via gRPC.
+
+Used when verifying a token issued by the [authentication API](https://secret.skvdmt.ru/api/auth/v1/doc).
+
+### Download
+```sh
 git clone https://github.com/skvdmt/valid-access-back
 ```
 
-Docker Image
-
-[Author](https://skvdmt.ru/) - Dmitry Skidanov
+## Links:
+- [Docker image](https://hub.docker.com/r/skvdmt/valid-access-back-v1) — Docker image on docker hub.
+- [Author](https://skvdmt.ru) — Dmitry Skidanov.
