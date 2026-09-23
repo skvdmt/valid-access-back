@@ -53,7 +53,8 @@ jobs:
             docker build \
              --build-arg NAME=${{ github.event.repository.name }} \
              --no-cache \
-             --tag ${{ github.repository }} .
+             --tag ${{ github.repository }}-v${{ vars.MAJOR_VERSION }} .
+            docker push ${{ github.repository }}-v${{ vars.MAJOR_VERSION }}
           EOF
       - name: Remove sources.
         if: success() || failure()
@@ -79,18 +80,19 @@ jobs:
       - name: Creating and runnig application container.
         run: |
           ssh -i ~/.ssh/github_ed25519 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} <<EOF
-            docker stop ${{ github.event.repository.name }} || true
-            docker rm ${{ github.event.repository.name }} || true
+            docker pull ${{ github.repository }}-v${{ vars.MAJOR_VERSION }}
+            docker stop ${{ github.event.repository.name }}-v${{ vars.MAJOR_VERSION }} || true
+            docker rm ${{ github.event.repository.name }}-v${{ vars.MAJOR_VERSION }} || true
             docker run -d \
               --network ${{ secrets.DOCKER_NETWORK }} \
-              --name ${{ github.event.repository.name }} \
+              --name ${{ github.event.repository.name }}-v${{ vars.MAJOR_VERSION }} \
               --env ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
               --volume ${{ secrets.HOME }}/logs/${{ github.event.repository.name }}:/var/log/${{ github.event.repository.name }} \
               --volume ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}:/etc/ssl/certs/${{ github.event.repository.name }} \
               --restart unless-stopped \
               --stop-timeout -1 \
-              ${{ github.repository }}
-            docker restart secret-back || true
+              ${{ github.repository }}-v${{ vars.MAJOR_VERSION }}
+            docker restart secret-back-v1 || true
           EOF
       - name: Remove SSH key files.
         if: success() || failure()

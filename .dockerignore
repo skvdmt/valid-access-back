@@ -2,6 +2,7 @@
 build
 logs
 schema
+certs
 .dockerignore
 .gitignore
 docker-compose.yaml
