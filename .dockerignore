@@ -3,6 +3,7 @@ build
 logs
 schema
 certs
+.idea
 .dockerignore
 .gitignore
 docker-compose.yaml
