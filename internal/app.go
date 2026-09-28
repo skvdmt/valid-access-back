@@ -55,7 +55,7 @@ func NewApp() (*App, error) {
 	if model.Conf, err = model.NewConfig(); err != nil {
 		return nil, err
 	}
-	// Создане глобального канала ошибок для всего приложения.
+	// Создание глобального канала ошибок для всего приложения.
 	model.Errors = make(chan error)
 	// Создание контекста.
 	a.ctx, a.cancel = context.WithCancel(context.Background())

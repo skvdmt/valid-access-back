@@ -64,7 +64,7 @@ func (u *UsersTokenCache) Clear() {
 	u.mu.Lock()
 	defer u.mu.Unlock()
 	for u, ts := range u.storage {
-		i := []*TokenInfo{}
+		var i []*TokenInfo
 		for _, t := range ts {
 			if t.Expire > time.Now().Unix() {
 				i = append(i, t)

@@ -21,7 +21,7 @@ type App struct {
 }
 
 // NewApp Конструктор.
-func NewApp(ctx context.Context) (*App, error) {
+func NewApp(_ context.Context) (*App, error) {
 	model.Log.Info.Info("repository layer creating")
 	a := &App{
 		accessTokens:     NewUsersTokenCache(),
@@ -43,12 +43,12 @@ func (a *App) Stop(context.Context) error {
 }
 
 // AccessTokenValidInCache Валидация токена доступа по кэшу.
-func (a *App) AccessTokenValidInCache(c context.Context, token string) bool {
+func (a *App) AccessTokenValidInCache(_ context.Context, token string) bool {
 	return a.accessTokens.Valid(token)
 }
 
 // AccessTokenAddToCache Добавление токена доступа в кэш.
-func (a *App) AccessTokenAddToCache(c context.Context, token, username string, exp int64) {
+func (a *App) AccessTokenAddToCache(_ context.Context, token, username string, exp int64) {
 	a.accessTokens.Add(username, token, exp)
 }
 

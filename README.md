@@ -1,5 +1,8 @@
 # Access token validation
 
+### Translations
+[Русский](./README_ru.md)
+
 ### Description
 Used to verify the access token on the backend.
 
@@ -13,5 +16,5 @@ git clone https://github.com/skvdmt/valid-access-back
 ```
 
 ## Links:
-- [Docker image](https://hub.docker.com/r/skvdmt/valid-access-back-v1) — Docker image on docker hub.
-- [Author](https://skvdmt.ru) — Dmitry Skidanov.
+- [Docker image](https://hub.docker.com/r/skvdmt/valid-access-back-v1) — Docker image on docker hub
+- [Dmitry Skidanov](https://skvdmt.ru) — Author

@@ -11,26 +11,19 @@ import (
 const (
 	// Название приложения.
 	NAME = "valid-access-back"
-
 	// Имя переменной окружения определяющая режим работы приложения.
 	MODE = "MODE"
-
 	// Режим разработки.
 	MODE_DEV = "dev"
-
 	// Путь в директории конфигурации в производстве.
 	CONFIG_DIRECTORY_PROD = "/etc"
-
 	// Путь в директории конфигурации в разработке.
 	CONFIG_DIRECTORY_DEV = "./config"
-
 	// Имя файла конфигурации в производстве.
 	CONFIG_FILENAME_PROD = "prod.yaml"
-
 	// Имя файла конфигурации в разработке.
 	CONFIG_FILENAME_DEV = "dev.yaml"
-
-	ACCESS_KEY = "ACCESS_KEY"
+	ACCESS_KEY          = "ACCESS_KEY"
 )
 
 // Conf Глобальный экземпляр конфигурации.
@@ -69,7 +62,7 @@ func NewConfig() (*Config, error) {
 	return c, nil
 }
 
-// configDir Директоия конфигурации.
+// configDir Директория конфигурации.
 func configDir() string {
 	m, o := os.LookupEnv(MODE)
 	if o && m == MODE_DEV {
