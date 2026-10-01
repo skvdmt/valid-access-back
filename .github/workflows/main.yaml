@@ -38,12 +38,13 @@ jobs:
               --name ${{ secrets.DOCKER_NETWORK }}-builder \
               --driver docker-container \
               --driver-opt "network=${{ secrets.DOCKER_NETWORK }}"
+            export ACCESS_KEY=${{ secrets.ACCESS_KEY }}
             docker buildx build \
               --network=host \
               --target=testing \
               --output=type=docker \
               --build-arg NAME=${{ github.event.repository.name }} \
-              --build-arg ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
+              --secret id=access_key,env=ACCESS_KEY \
               --no-cache \
               --tag ${{ github.repository }}:testing .
             docker rmi ${{ github.repository }}:testing

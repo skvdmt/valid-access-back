@@ -12,10 +12,11 @@ RUN go mod download
 
 # Тестирование.
 FROM preper AS testing
-ARG ACCESS_KEY
-RUN go test --tags=unit -v ./...
-RUN go test --tags=integration -v ./...
-RUN go test --tags=e2e -v ./...
+RUN --mount=type=secret,id=access_key \
+  export ACCESS_KEY=$(cat /run/secrets/access_key) && \
+  go test --tags=unit -v ./... && \
+  go test --tags=integration -v ./... && \
+  go test --tags=e2e -v ./...
 
 # Сборка.
 FROM preper AS building
