@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/skvdmt/erw"
 	"github.com/skvdmt/jwt"
+	erw "github.com/skvdmt/skvdmt-back/pkg/errwrap"
 	"github.com/skvdmt/valid-access-back/internal/model"
 	"github.com/skvdmt/valid-access-back/internal/repository"
 )
@@ -43,12 +43,12 @@ func (a *App) AccessTokenValidation(ctx context.Context, token string) error {
 	p, err := jwt.Parse(token)
 	if err != nil {
 		return erw.New(
-			erw.Status(http.StatusUnauthorized),
+			erw.CodeHTTP(http.StatusUnauthorized),
 		)
 	}
 	if v, _ := p.Valid(model.Conf.AccessKey); !v {
 		return erw.New(
-			erw.Status(http.StatusUnauthorized),
+			erw.CodeHTTP(http.StatusUnauthorized),
 		)
 	}
 	// Добавление в кеш.
