@@ -93,6 +93,7 @@ jobs:
               --network ${{ secrets.DOCKER_NETWORK }} \
               --name ${{ github.event.repository.name }}-v${{ vars.MAJOR_VERSION }} \
               --memory="32m" \
+              --cpus="0.25" \
               --env ACCESS_KEY=${{ secrets.ACCESS_KEY }} \
               --volume ${{ secrets.HOME }}/logs/${{ github.event.repository.name }}:/var/log/${{ github.event.repository.name }} \
               --volume ${{ secrets.HOME }}/certs/${{ github.event.repository.name }}:/etc/ssl/certs/${{ github.event.repository.name }} \
